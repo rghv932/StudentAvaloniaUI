@@ -38,14 +38,14 @@
 					<DataGridTemplateColumn Header="Edit Action">
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<Button HorizontalAlignment="Center" Command="{Binding EditCommand}">Edit</Button>
+								<Button HorizontalAlignment="Center" Command="{Binding $parent[Window].DataContext.EditCommand}" CommandParameter="{Binding .}">Edit</Button>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn Header="Delete Action">
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<Button HorizontalAlignment="Center" Command="{Binding btnDeleteStudent}" CommandParameter="{Binding .}">Delete</Button>
+								<Button HorizontalAlignment="Center" Command="{Binding $parent[Window].DataContext.DeleteCommand}" CommandParameter="{Binding .}">Delete</Button>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>

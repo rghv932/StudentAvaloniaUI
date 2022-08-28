@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Windows.Input;
+using System.Reactive;
+using System.Threading.Tasks;
 
 namespace StudentAvaloniaUI.ViewModels
 {
@@ -24,7 +25,8 @@ namespace StudentAvaloniaUI.ViewModels
         #region ctor
         public MainWindowViewModel()
         {
-            EditCommand = ReactiveCommand.Create(btnEditStudent);
+            EditCommand = ReactiveCommand.Create<Student>(btnEditStudent);
+            DeleteCommand = ReactiveCommand.Create<Student>(btnDeleteStudent);
             client.BaseAddress = new Uri("https://localhost:44375/api/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
@@ -68,8 +70,11 @@ namespace StudentAvaloniaUI.ViewModels
             get => students;
             set => this.RaiseAndSetIfChanged(ref students, value);
         }
+        #endregion
 
-        public ICommand EditCommand { get; set; }
+        #region Commands
+        public ReactiveCommand<Student, Unit> EditCommand { get; }
+        public ReactiveCommand<Student,Unit> DeleteCommand { get; }
         #endregion
 
         #region CRUD
@@ -82,29 +87,29 @@ namespace StudentAvaloniaUI.ViewModels
             Students = new ObservableCollection<Student>(students);
         }
 
-        private async void SaveStudent(Student student)
+        private async Task SaveStudent(Student student)
         {
             await client.PostAsJsonAsync("students", student);
         }
 
-        private async void UpdateStudent(Student student)
+        private async Task UpdateStudent(Student student)
         {
             await client.PutAsJsonAsync("students/" + student.StudentId, student);
         }
 
-        private async void DeleteStudent(int studentId)
+        private async Task DeleteStudent(int studentId)
         {
             await client.DeleteAsync("students/" + studentId);
         }
         #endregion
 
-        #region Commands
+        #region Methods
         public void btnLoadStudentsClick()
         {
             this.GetStudents();
         }
 
-        public void btnSaveStudentClick()
+        public async void btnSaveStudentClick()
         {
             Student student = new()
             {
@@ -115,26 +120,36 @@ namespace StudentAvaloniaUI.ViewModels
 
             if (student.StudentId == 0)
             {
-                //this.SaveStudent(student);
+                await SaveStudent(student);
                 LabelMessage = "Student Saved";
             }
             else
             {
-                this.UpdateStudent(student);
+                await UpdateStudent(student);
                 LabelMessage = "Student Updated";
             }
 
             Id = 0;
             Name = "";
             Roll = "";
+            await Task.Delay(500);
+            GetStudents();
         }
 
-        public void btnEditStudent()
+        public void btnEditStudent(Student student)
         {
-            //Student student = DataContext as Student;
-            //Id = student.StudentId;
-            //Name = student.Name;
-            //Roll = student.Roll;
+            Id = student.StudentId;
+            Name = student.Name;
+            Roll = student.RollNo;
+        }
+
+        public async void btnDeleteStudent(Student student)
+        {
+            await DeleteStudent(student.StudentId);
+            LabelMessage = "Deleted";
+
+            await Task.Delay(500);
+            GetStudents();
         }
         #endregion
     }
