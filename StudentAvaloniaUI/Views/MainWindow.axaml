@@ -1,0 +1,58 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:StudentAvaloniaUI.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="StudentAvaloniaUI.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Student Avalonia UI"
+		Height="450" Width="800">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+	<Border Background="LightCyan"
+        BorderBrush="Black"
+        BorderThickness="2"
+        CornerRadius="20"
+        Padding="25">
+		
+		<Grid>
+			<TextBox x:Name="txtStudentId" IsVisible="False" Text="{Binding Id,Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="100,-20,0,0"></TextBox>
+			<Label x:Name="lblName" Content="Name : " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,20,20"></Label>
+			<Label x:Name="lblRoll" Content="Roll No. : " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,65,20,20"></Label>
+			<TextBox x:Name="txtName" Watermark="Name" Text="{Binding Name,Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="100,15,0,0"></TextBox>
+			<TextBox x:Name="txtRoll" Watermark="Roll" Text="{Binding Roll,Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="100,60,0,0"></TextBox>
+			<Button x:Name="btnSaveStudent" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,105,0,0" Width="200" Command="{Binding btnSaveStudentClick}">Save Student</Button>
+			<Button x:Name="btnLoadStudents" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="325,20,50,0" Command="{Binding btnLoadStudentsClick}">Load Students</Button>
+			<DataGrid Name="dgStudent" Margin="325,60,50,50"
+					  Items="{Binding Students}"
+					  AutoGenerateColumns="False">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Student Id" Binding="{Binding StudentId}"/>
+					<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+					<DataGridTextColumn Header="Roll" Binding="{Binding RollNo}"/>
+					<DataGridTemplateColumn Header="Edit Action">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button HorizontalAlignment="Center" Command="{Binding EditCommand}">Edit</Button>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="Delete Action">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button HorizontalAlignment="Center" Command="{Binding btnDeleteStudent}" CommandParameter="{Binding .}">Delete</Button>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+			<Label Name="lblMessage" Content="{Binding LabelMessage}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100,145,0,0"></Label>
+		</Grid>
+	</Border>
+
+</Window>
